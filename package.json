@@ -1,0 +1,33 @@
+{
+  "name": "@hydrogenplatform/raindrop",
+  "version": "0.1.0",
+  "description": "Convenience functions to integrate Raindrop authentication into your project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "raindrop",
+    "authentication",
+    "web3",
+    "ethereum",
+    "blockchain",
+    "fintech",
+    "two-factor",
+    "2FA"
+  ],
+  "author": "Noah Zinsmeister <noah@hydrogenplatform.com> (https://www.hydrogenplatform.com/hydro)",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.10.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1"
+  },
+  "dependencies": {
+    "request": "^2.85.0",
+    "request-promise-native": "^1.0.5"
+  }
+}
