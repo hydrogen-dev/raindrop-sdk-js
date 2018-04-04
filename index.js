@@ -1,4 +1,9 @@
+const createError = require('create-error')
 const requestPromise = require('request-promise-native')
+
+const RaindropError = createError('RaindropError', {
+  code: 'RaindropError'
+})
 
 var verbose = false
 var nodeCryptoAvailable = false
@@ -6,9 +11,8 @@ var browserCryptoAvailable = false
 
 var crypto
 
-function encodeBasicAuth (userName, key) {
-  let base64Encoded = Buffer.from(`${userName}:${key}`).toString('base64')
-  return `Basic ${base64Encoded}`
+function setVerbose (flag) {
+  verbose = flag
 }
 
 function initializeCrypto () {
@@ -23,23 +27,10 @@ function initializeCrypto () {
   }
 }
 
-function generateChallenge () {
-  var challenge
-  if (nodeCryptoAvailable) {
-    challenge = generateChallengeNode()
-  } else if (browserCryptoAvailable) {
-    challenge = generateChallengeBrowser()
-  } else {
-    throw new Error('Crypto support disabled.')
-  }
-  if ((typeof challenge === 'string' || challenge instanceof String) & (/^[0-9]{6}$/.test(challenge))) {
-    return challenge
-  } else {
-    throw new Error('Internal error, please contact this package\'s maintainer.')
-  }
-}
-
 function generateChallengeNode () {
+  if (!nodeCryptoAvailable) {
+    throw new RaindropError('Crypto support not available in your runtime environment.')
+  }
   var challenge
   do {
     // to get a csprn in [0, 1e6) we need 20 random bits, so we get 3 random bytes := 24 bits and shift off 4 bits
@@ -49,6 +40,9 @@ function generateChallengeNode () {
 }
 
 function generateChallengeBrowser () {
+  if (!browserCryptoAvailable) {
+    throw new RaindropError('Crypto support not available in your runtime environment.')
+  }
   var uints
   var challenges
   do {
@@ -59,6 +53,11 @@ function generateChallengeBrowser () {
     challenges = uints.map(u => { return u >> 6 })
   } while (!challenges.every(u => { return u < 1e3 })) // repeat if numbers >= 1e3, to maintain a uniform distribution
   return Array.from(challenges).map(u => { return u.toString().padStart(3, '0') }).join('')
+}
+
+function encodeBasicAuth (userName, key) {
+  let base64Encoded = Buffer.from(`${userName}:${key}`).toString('base64')
+  return `Basic ${base64Encoded}`
 }
 
 function registerUser (hydroUserName, hydroKey, hydroApplicationId, newUserName) {
@@ -82,13 +81,12 @@ function registerUser (hydroUserName, hydroKey, hydroApplicationId, newUserName)
     .catch(error => {
       // todo: add further/more robust error checks
       if (verbose) {
-        console.error(`User registration failed. Details:\n`)
         throw error
       } else {
         if (error.statusCode === 400) {
-          throw new Error(`User registration failed. Have you already registered this user?`)
+          throw new RaindropError(`User registration failed. Have you already registered this user?`)
         } else {
-          throw new Error(`User registration failed. ${error.statusCode} error: ${error.body}.`)
+          throw new RaindropError(`User registration failed. ${error.statusCode} error: ${error.body}.`)
         }
       }
     })
@@ -115,23 +113,19 @@ function verifySignature (hydroUserName, hydroKey, hydroApplicationId, challenge
     })
     .catch(error => {
       if (verbose) {
-        console.error(`Signature verification failed. Details:\n`)
         throw error
       } else {
-        throw new Error(`Signature verification failed. ${error.statusCode} error: ${error.body}.`)
+        throw new RaindropError(`Signature verification failed. ${error.statusCode} error: ${error.body}.`)
       }
     })
-}
-
-function setVerbose (flag) {
-  verbose = flag
 }
 
 initializeCrypto()
 
 module.exports = {
+  setVerbose: setVerbose,
+  generateChallengeNode: generateChallengeNode,
+  generateChallengeBrowser: generateChallengeBrowser,
   registerUser: registerUser,
-  generateChallenge: generateChallenge,
-  verifySignature: verifySignature,
-  setVerbose: setVerbose
+  verifySignature: verifySignature
 }
