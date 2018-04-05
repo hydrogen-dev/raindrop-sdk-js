@@ -1,1 +1,3 @@
-module.exports = require('../../raindrop-SDK-js')
+const raindrop = require('../../raindrop-sdk-js')
+
+module.exports = raindrop
