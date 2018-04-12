@@ -1,4 +1,10 @@
+const common = require('./lib/common.js')
+const client = require('./lib/client.js')
+const enterprise = require('./lib/enterprise.js')
+
+common.polyfillArrayFrom()
+
 module.exports = {
-  client: require('./lib/client.js'),
-  enterprise: require('./lib/enterprise.js')
+  client: client,
+  enterprise: enterprise
 }
