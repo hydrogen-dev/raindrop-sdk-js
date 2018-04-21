@@ -2,12 +2,12 @@
 This package provides a suite of convenience functions intended to simplify the integration of Hydro's [Raindrop authentication](https://www.hydrogenplatform.com/hydro) into your project. An equivalent [Python SDK](https://github.com/hydrogen-dev/raindrop-sdk-python) is also available. Raindrop is available in two flavors:
 
 
-## Raindrop Enterprise
-Raindrop Enterprise is an enterprise-level security protocol to secure APIs. The open-source code powering Raindrop Enterprise is available [here](https://github.com/hydrogen-dev/smart-contracts/tree/master/hydro-token-and-raindrop-enterprise). For more information, please refer to the [Raindrop Enterprise documentation](https://www.hydrogenplatform.com/docs/hydro/v1/#Raindrop).
+## Enterprise Raindrop
+Enterprise Raindrop is an enterprise-level security protocol to secure APIs. The open-source code powering Enterprise Raindrop is available [here](https://github.com/hydrogen-dev/smart-contracts/tree/master/hydro-token-and-raindrop-enterprise). For more information, please refer to the [Enterprise Raindrop documentation](https://www.hydrogenplatform.com/docs/hydro/v1/#Raindrop).
 
 
-## Raindrop Client
-Raindrop Client is a next-gen 2FA solution. The open-source code powering Raindrop Client is available [here](https://github.com/hydrogen-dev/smart-contracts/tree/master/raindrop-client).
+## Client Raindrop
+Client Raindrop is a next-gen 2FA solution. The open-source code powering Client Raindrop is available [here](https://github.com/hydrogen-dev/smart-contracts/tree/master/raindrop-client).
 
 
 ## Installation
@@ -24,11 +24,11 @@ You can also install manually:
 - `npm install`
 
 ### In a Browser
-A browserified version is in [/browserify/raindrop.js](./browserify/raindrop.js) that you can include in an HTML page:
+A webpacked version is in [/webpack/raindrop_bundle.js](./webpack/raindrop_bundle.js) that you can include in an HTML page:
 ```
 <html>
   <body>
-    <script src="raindrop.js"></script>
+    <script src="raindrop_bundle.js"></script>
   </body>
 </html>
 ```
