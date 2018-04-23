@@ -130,4 +130,4 @@ Returns:
 - `verified`: A boolean indicating whether or not the user should be allowed to proceed with any further authentication requests
 
 ## Copyright & License
-Copyright 2018 The Hydrogen Technology Corporation under the GNU General Public License v3.0.
+Copyright 2018 The Hydrogen Technology Corporation under the MIT License.
