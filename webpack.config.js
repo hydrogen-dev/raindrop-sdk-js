@@ -9,19 +9,16 @@ module.exports = {
     tls: 'empty'
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    }),
+    new webpack.DefinePlugin({'process.env': {
+      'NODE_ENV': JSON.stringify('production')
+    }}),
     new webpack.optimize.OccurrenceOrderPlugin()
   ],
-  context: path.resolve(__dirname, 'webpack'),
   entry: [
-    'webpack_exports.js'
+    path.resolve(__dirname, 'src', 'messages.js')
   ],
   output: {
-    path: path.resolve(__dirname, 'webpack'),
+    path: path.resolve(__dirname, 'dist'),
     filename: 'raindrop_bundle.js'
   }
 }

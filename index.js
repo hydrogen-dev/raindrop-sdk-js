@@ -1,5 +1,5 @@
-const client = require('./lib/client.js')
-const enterprise = require('./lib/enterprise.js')
+const client = require('./src/client.js')
+const enterprise = require('./src/enterprise.js')
 
 module.exports = {
   client: client,
