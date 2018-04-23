@@ -15,7 +15,7 @@ module.exports = {
     new webpack.optimize.OccurrenceOrderPlugin()
   ],
   entry: [
-    path.resolve(__dirname, 'src', 'messages.js')
+    path.resolve(__dirname, 'src', 'client_messages.js')
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),

@@ -1,7 +1,7 @@
 const requestPromise = require('request-promise-native')
 
-const common = require('./common')
-const message = require('./message.js')
+const common = require('./common_calls')
+const messages = require('./client_messages')
 
 class RaindropPartner extends common.BasicPartner {
   constructor (config) {
@@ -73,5 +73,5 @@ RaindropPartner.prototype.verifySignature = function (challengeUserName, challen
 
 module.exports = {
   RaindropPartner: RaindropPartner,
-  generateMessage: message.generateMessage
+  generateMessage: messages.generateMessage
 }

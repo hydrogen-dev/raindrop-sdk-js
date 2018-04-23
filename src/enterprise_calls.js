@@ -1,6 +1,6 @@
 const requestPromise = require('request-promise-native')
 
-const common = require('./common')
+const common = require('./common_calls')
 
 class RaindropPartner extends common.BasicPartner {}
 

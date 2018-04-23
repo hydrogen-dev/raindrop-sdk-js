@@ -13,7 +13,7 @@ Client Raindrop is a next-gen 2FA solution. The open-source code powering Client
 ## Installation
 ### Recommended
 Install [raindrop on npm](https://www.npmjs.com/package/@hydrogenplatform/raindrop):
-```
+```shell
 npm install -S @hydrogenplatform/raindrop
 ```
 
@@ -24,66 +24,55 @@ You can also install manually:
 - `npm install`
 
 ### In a Browser
-A webpacked version is in [/webpack/raindrop_bundle.js](./webpack/raindrop_bundle.js) that you can include in an HTML page:
-```
-<html>
-  <body>
-    <script src="raindrop_bundle.js"></script>
-  </body>
-</html>
+A webpacked version is in [/dist/raindrop_bundle.js](./dist/raindrop_bundle.js) that you can include in an HTML page. Since your Hydro API credentials **should not** be stored in your front-end, this version exposes a global `raindrop` object with only a single method that does not call the Hydro API: `generateMessage` (see below for details).
+
+```html
+<script src="raindrop_bundle.js"></script>
 ```
 
 
 ## Usage
 The `raindrop` package exposes two objects: `raindrop.client` and `raindrop.enterprise`. To authenticate your API calls, you'll need to instantiate a `RaindropPartner` object for each module, and set the environment by calling `setOptions` (see [the docs](https://www.hydrogenplatform.com/docs/hydro/v1/#Testnet) for more information on setting the environment):
-```
+
+```javascript
 const raindrop = require("@hydrogenplatform/raindrop")
-
-// Client Raindrop Initialization
-const ClientRaindropPartner = new raindrop.client.RaindropPartner({
-    hydroKey: <YOUR_KEY>,
-    hydroUserName: <YOUR_USER_NAME>
-})
-
-ClientRaindropPartner.setOptions({
-  verbose: true,
-  environment: 'Sandbox'
-})
-
-// Enterprise Raindrop Initialization
-const EnterpriseRaindropPartner = new raindrop.enterprise.RaindropPartner({
-    hydroKey: <YOUR_KEY>,
-    hydroUserName: <YOUR_USER_NAME>,
-    hydroApplicationId: <YOUR_APPLICATION_ID>
-})
-
-EnterpriseRaindropPartner.setOptions({
-  verbose: false,
-  environment: 'Production'
-})
 ```
-
 
 ## Generic `RaindropPartner` Functions
 ### constructor `new RaindropPartner(config)`
+To initialize a new RaindropPartner object in the `client` or `enterprise` modules, you must pass a config object with the following values:
 - `config`:
   - `hydroKey` (required): Your key for the hydro API
   - `hydroUserName` (required): Your username for the hydro API
   - `hydroApplicationId` (required for `client` calls): Your application ID for the Hydro API
 
 ### `RaindropPartnerObject.setOptions(options)`
+At a minimum, you'll need to set the environment on each RaindropPartner object via `setOptions`, where options is an object with the following values:
 - `options`:
-  - environment (required): Sets environment to `Sandbox` | `Production`
-  - verbose (optional): `true` | `false` turns more detailed error reporting on | off
+  - `environment` (required): Sets environment to `Sandbox` | `Production`
+  - `verbose` (optional): `true` | `false` turns more detailed error reporting on | off
 
 
-## `raindrop.client.RaindropPartner` Functions
+## `raindrop.client` Functions
 
 ### `generateMessage()`
 Generates a random 6-digit string of integers for users to sign. Uses system-level CSPRNG.
 
 Returns:
 - A string of 6 random integers
+
+## `raindrop.client.RaindropPartner` Functions
+Client Raindrop initialization code will look like:
+
+```javascript
+// Client Raindrop Initialization
+const ClientRaindropPartner = new raindrop.client.RaindropPartner({
+    hydroKey: "YOUR_KEY",
+    hydroUserName: "YOUR_USER_NAME"
+})
+
+ClientRaindropPartner.setOptions({ environment: 'Sandbox' })
+```
 
 ### `registerUser(newUserName)`
 Should be called when a user elects to use Raindrop Client for the first time with your application.
@@ -104,6 +93,19 @@ Returns:
 - `verified`: boolean indicating whether the user has signed `challengeString`
 
 ## `raindrop.enterprise.RaindropPartner` Functions
+Enterprise Raindrop initialization code will look like:
+
+```javascript
+// Enterprise Raindrop Initialization
+const EnterpriseRaindropPartner = new raindrop.enterprise.RaindropPartner({
+    hydroKey: "YOUR_KEY",
+    hydroUserName: "YOUR_USER_NAME",
+    hydroApplicationId: "YOUR_APPLICATION_ID"
+})
+
+EnterpriseRaindropPartner.setOptions({ environment: 'Sandbox' })
+```
+
 ### `whitelist(addressToWhitelist)`
 A one-time call that whitelists a user to authenticate with your API via Enterprise raindrop.
 - `addressToWhitelist`: The Ethereum address of the user you're whitelisting
