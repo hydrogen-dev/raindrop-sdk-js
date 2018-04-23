@@ -1,6 +1,6 @@
 {
   "name": "@hydrogenplatform/raindrop",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Convenience functions to integrate Raindrop authentication into your project.",
   "main": "index.js",
   "scripts": {
@@ -21,9 +21,8 @@
     "url": "https://github.com/hydrogen-dev/raindrop-sdk-js"
   },
   "author": "Noah Zinsmeister <noah@hydrogenplatform.com> (https://www.hydrogenplatform.com/hydro)",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "devDependencies": {
-    "browserify": "^16.1.1",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.10.0",
