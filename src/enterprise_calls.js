@@ -8,7 +8,7 @@ RaindropPartner.prototype.whitelist = function (addressToWhitelist) {
   this.ensureEnvironmentSet()
 
   var options = {
-    method: 'POST',
+    method: 'GET',
     url: `${this.apiURL}/whitelist/${addressToWhitelist}`,
     headers: {
       Authorization: common.encodeBasicAuth(this.hydroUserName, this.hydroKey)
@@ -33,7 +33,7 @@ RaindropPartner.prototype.requestChallenge = function (hydroAddressId) {
   this.ensureEnvironmentSet()
 
   var options = {
-    method: 'POST',
+    method: 'GET',
     url: `${this.apiURL}/challenge`,
     qs: {
       hydro_address_id: hydroAddressId
@@ -61,7 +61,7 @@ RaindropPartner.prototype.authenticate = function (hydroAddressId) {
   this.ensureEnvironmentSet()
 
   var options = {
-    method: 'POST',
+    method: 'GET',
     url: `${this.apiURL}/authenticate`,
     qs: {
       hydro_address_id: hydroAddressId

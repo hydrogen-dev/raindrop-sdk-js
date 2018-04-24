@@ -1,4 +1,5 @@
 const createError = require('create-error')
+const requestPromise = require('request-promise-native')
 
 const RaindropError = createError('RaindropError', {
   code: 'RaindropError'
@@ -68,6 +69,34 @@ class BasicPartner {
         `{environment: ${Object.keys(this.environmentUrls).map(x => `'${x}'`).join(' | ')}}`
       )
     }
+  }
+
+  transactionStatus (transactionHash) {
+    this.ensureEnvironmentSet()
+
+    var options = {
+      method: 'POST',
+      url: `${this.apiURL}/transaction`,
+      qs: {
+        transaction_hash: transactionHash
+      },
+      headers: {
+        Authorization: encodeBasicAuth(this.hydroUserName, this.hydroKey)
+      },
+      json: true
+    }
+
+    return requestPromise(options)
+      .then(result => {
+        return result
+      })
+      .catch(error => {
+        if (this.verbose) {
+          throw error
+        } else {
+          throw new RaindropError(`Whitelist request failed. ${error.statusCode} error: ${error.message}.`)
+        }
+      })
   }
 }
 

@@ -52,14 +52,14 @@ At a minimum, you'll need to set the environment on each RaindropPartner object 
   - `environment` (required): Sets environment to `Sandbox` | `Production`
   - `verbose` (optional): `true` | `false` turns more detailed error reporting on | off
 
+### `RaindropPartnerObject.transactionStatus(transactionHash)`
+This function returns true when the transaction referenced by `transactionHash` has been included in a block on the Ethereum blockchain.
+- `transactionHash` (required): Hash of a transaction
 
 ## `raindrop.client` Functions
 
 ### `generateMessage()`
 Generates a random 6-digit string of integers for users to sign. Uses system-level CSPRNG.
-
-Returns:
-- A string of 6 random integers
 
 ## `raindrop.client.RaindropPartner` Functions
 Client Raindrop initialization code will look like:
@@ -78,19 +78,10 @@ ClientRaindropPartner.setOptions({ environment: 'Sandbox' })
 Should be called when a user elects to use Raindrop Client for the first time with your application.
 - `newUserName`: the new user's Hydro username (the one they used when signing up for Hydrogen 2FA app, visible in-app)
 
-Returns:
-- `createDate`: time when the user registered with your application
-- `username`: the user's Hydro username
-- `application_client_mapping_id`: a uuid identifying the user's link with your application
-- `application_id`: your `hydroApplicationId`.
-
 ### `verifySignature(challengeUserName, challengeString)`
 Should be called each time you need to verify whether a user has signed a message.
 - `challengeUserName`: the username of the user that is meant to have signed `challengeString`
 - `challengeString`: a message generated from `generateMessage()`
-
-Returns:
-- `verified`: boolean indicating whether the user has signed `challengeString`
 
 ## `raindrop.enterprise.RaindropPartner` Functions
 Enterprise Raindrop initialization code will look like:
@@ -110,24 +101,13 @@ EnterpriseRaindropPartner.setOptions({ environment: 'Sandbox' })
 A one-time call that whitelists a user to authenticate with your API via Enterprise raindrop.
 - `addressToWhitelist`: The Ethereum address of the user you're whitelisting
 
-Returns:
-- `hydro_address_id`: this value **must** be stored and passed in all future calls involving this user
-
 ### `requestChallenge(hydroAddressId)`
 Initiate an authentication attempt on behalf of the user associated with `hydroAddressId`.
 - `hydroAddressId`: the `hydro_address_id` of the authenticating user.
 
-Returns:
-- `amount`: Quantity of Hydro tokens the user associated with hydroAddressId is required to send to the authentication smart contract
-- `challenge`: A randomly generated number used to confirm the validity of the transaction
-- `partner_id`: The partner ID of the calling API, the same for all authentication requests with this API
-
 ### `authenticate(hydroAddressId)`
 Checks whether the user correctly performed the raindrop.
 - `hydroAddressId`: the `hydro_address_id` of the user who claims to be authenticated.
-
-Returns:
-- `verified`: A boolean indicating whether or not the user should be allowed to proceed with any further authentication requests
 
 ## Copyright & License
 Copyright 2018 The Hydrogen Technology Corporation under the MIT License.
