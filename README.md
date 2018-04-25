@@ -68,7 +68,8 @@ Client Raindrop initialization code will look like:
 // Client Raindrop Initialization
 const ClientRaindropPartner = new raindrop.client.RaindropPartner({
     hydroKey: "YOUR_KEY",
-    hydroUserName: "YOUR_USER_NAME"
+    hydroUserName: "YOUR_USER_NAME",
+    hydroApplicationId: "YOUR_APPLICATION_ID"    
 })
 
 ClientRaindropPartner.setOptions({ environment: 'Sandbox' })
@@ -83,6 +84,10 @@ Should be called each time you need to verify whether a user has signed a messag
 - `challengeUserName`: the username of the user that is meant to have signed `challengeString`
 - `challengeString`: a message generated from `generateMessage()`
 
+### `unregisterUser(userName)`
+Should be called when a user disables Raindrop Client with your application.
+- `userName`: the user's Hydro username (the one they used when signing up for Hydrogen 2FA app, visible in-app)
+
 ## `raindrop.enterprise.RaindropPartner` Functions
 Enterprise Raindrop initialization code will look like:
 
@@ -90,8 +95,7 @@ Enterprise Raindrop initialization code will look like:
 // Enterprise Raindrop Initialization
 const EnterpriseRaindropPartner = new raindrop.enterprise.RaindropPartner({
     hydroKey: "YOUR_KEY",
-    hydroUserName: "YOUR_USER_NAME",
-    hydroApplicationId: "YOUR_APPLICATION_ID"
+    hydroUserName: "YOUR_USER_NAME"
 })
 
 EnterpriseRaindropPartner.setOptions({ environment: 'Sandbox' })

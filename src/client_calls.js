@@ -70,6 +70,35 @@ RaindropPartner.prototype.verifySignature = function (challengeUserName, challen
     })
 }
 
+RaindropPartner.prototype.unregisterUser = function (userName) {
+  this.ensureEnvironmentSet()
+
+  var options = {
+    method: 'DELETE',
+    url: `${this.apiURL}/application/client`,
+    qs: {
+      username: userName,
+      application_id: this.hydroApplicationId
+    },
+    headers: {
+      Authorization: common.encodeBasicAuth(this.hydroUserName, this.hydroKey)
+    },
+    json: true
+  }
+
+  return requestPromise(options)
+    .then(result => {
+      return result
+    })
+    .catch(error => {
+      if (this.verbose) {
+        throw error
+      } else {
+        throw new common.RaindropError(`Unregistration failed. ${error.statusCode} error: ${error.message}.`)
+      }
+    })
+}
+
 module.exports = {
   RaindropPartner: RaindropPartner
 }
