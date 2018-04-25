@@ -1,6 +1,6 @@
 {
   "name": "@hydrogenplatform/raindrop",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Convenience functions to integrate Raindrop authentication into your project.",
   "main": "index.js",
   "scripts": {
