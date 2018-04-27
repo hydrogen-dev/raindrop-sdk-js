@@ -8,6 +8,7 @@ class RaindropPartner extends common.BasicPartner {
     if (!config.hydroApplicationId) {
       throw new common.RaindropError(`Please provide your ApplicationId in the config: {hydroApplicationId: ..., ...}`)
     }
+    this.hydroApplicationId = config.hydroApplicationId
   }
 }
 
