@@ -1,10 +1,10 @@
-const client = require('./src/client_calls.js')
-const messages = require('./src/client_messages')
-const enterprise = require('./src/enterprise_calls.js')
+const client = require('./src/clientCalls.js')
+const server = require('./src/serverCalls.js')
+const messages = require('./src/clientMessages')
 
 client.generateMessage = messages.generateMessage
 
 module.exports = {
   client: client,
-  enterprise: enterprise
+  server: server
 }

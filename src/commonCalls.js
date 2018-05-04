@@ -10,6 +10,9 @@ function encodeBasicAuth (userName, key) {
   return `Basic ${base64Encoded}`
 }
 
+const setVerbose = Symbol('setVerbose')
+const setEnvironment = Symbol('setEnvironment')
+
 class BasicPartner {
   constructor (config) {
     if (!config.hydroKey) {
@@ -22,15 +25,16 @@ class BasicPartner {
     this.hydroUserName = config.hydroUserName
 
     this.verbose = false
-    this.environmentSet = false
+    this.initialized = false
     this.environmentUrls = {
-      'Dev': 'https://dev.hydrogenplatform.com/hydro/v1',
-      'Sandbox': 'https://sandbox.hydrogenplatform.com/hydro/v1',
-      'Production': 'https://api.hydrogenplatform.com/hydro/v1'
+      'QA': 'https://qa.hydrogenplatform.com',
+      'Dev': 'https://dev.hydrogenplatform.com',
+      'Sandbox': 'https://sandbox.hydrogenplatform.com',
+      'Production': 'https://api.hydrogenplatform.com'
     }
   }
 
-  setVerbose (flag) {
+  [setVerbose] (flag) {
     let allowedValues = [true, false]
     if (!allowedValues.includes(flag)) {
       throw new RaindropError(`Invalid 'verbose' value: Allowed options are: ${allowedValues.toString()}`)
@@ -38,47 +42,50 @@ class BasicPartner {
     this.verbose = flag
   }
 
-  setEnvironment (newEnvironment) {
+  [setEnvironment] (newEnvironment) {
     let allowedValues = Object.keys(this.environmentUrls)
     if (!allowedValues.includes(newEnvironment)) {
       throw new RaindropError(`Invalid 'environment' value: Allowed options are: ${allowedValues.toString()}`)
     }
     this.environment = newEnvironment
     this.apiURL = this.environmentUrls[newEnvironment]
-    this.environmentSet = true
   }
 
-  setOptions (options) {
+  initialize (options) {
     let acceptableOptions = ['verbose', 'environment']
     // check that the passed option names are valid...
     if (!Object.keys(options).every(x => acceptableOptions.includes(x))) {
-      throw new RaindropError(`Allowed options are: ${acceptableOptions.toString()}`)
+      throw new RaindropError(`Invalid key. Allowed options are: ${acceptableOptions.toString()}`)
     }
     if ('verbose' in options) {
-      this.setVerbose(options.verbose)
+      this[setVerbose](options.verbose)
     }
     if ('environment' in options) {
-      this.setEnvironment(options.environment)
+      this[setEnvironment](options.environment)
     }
+
+    this.initialized = true
+
+    this.refreshToken()
   }
 
-  ensureEnvironmentSet () {
-    if (!this.environmentSet) {
+  ensureInitialized () {
+    if (!this.initialized) {
       throw new RaindropError(
-        `No environment set. Call the .setOptions method with ` +
+        `Object has not been initialized. Call the initialize method with ` +
         `{environment: ${Object.keys(this.environmentUrls).map(x => `'${x}'`).join(' | ')}}`
       )
     }
   }
 
-  transactionStatus (transactionHash) {
-    this.ensureEnvironmentSet()
+  refreshToken () {
+    this.ensureInitialized()
 
     var options = {
       method: 'POST',
-      url: `${this.apiURL}/transaction`,
+      url: `${this.apiURL}/authorization/v1/oauth/token`,
       qs: {
-        transaction_hash: transactionHash
+        grant_type: 'client_credentials'
       },
       headers: {
         Authorization: encodeBasicAuth(this.hydroUserName, this.hydroKey)
@@ -88,20 +95,54 @@ class BasicPartner {
 
     return requestPromise(options)
       .then(result => {
+        this.OAuthToken = result.access_token
+      })
+      .catch(error => {
+        if (this.verbose) {
+          throw error
+        } else {
+          throw new RaindropError(`Token request failed. ${error.statusCode} error: ${error.message}.`)
+        }
+      })
+  }
+
+  callHydroAPI (endpoint, options) {
+    this.ensureInitialized()
+
+    // inject url and authorization
+    options.headers = {
+      Authorization: `Bearer ${this.OAuthToken}`
+    }
+    options.url = `${this.apiURL}/hydro/v1${endpoint}`
+    options.json = true
+
+    // return the data
+    return requestPromise(options)
+      .then(result => {
         return result
       })
       .catch(error => {
         if (this.verbose) {
           throw error
         } else {
-          throw new RaindropError(`Whitelist request failed. ${error.statusCode} error: ${error.message}.`)
+          throw new RaindropError(`The call failed. ${error.statusCode} error: ${error.message}.`)
         }
       })
+  }
+
+  transactionStatus (transactionHash) {
+    var options = {
+      method: 'GET',
+      qs: {
+        transaction_hash: transactionHash
+      }
+    }
+
+    return this.callHydroAPI('/transaction', options)
   }
 }
 
 module.exports = {
   BasicPartner: BasicPartner,
-  RaindropError: RaindropError,
-  encodeBasicAuth: encodeBasicAuth
+  RaindropError: RaindropError
 }
