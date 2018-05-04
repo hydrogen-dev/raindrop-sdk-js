@@ -27,8 +27,6 @@ class BasicPartner {
     this.verbose = false
     this.initialized = false
     this.environmentUrls = {
-      'QA': 'https://qa.hydrogenplatform.com',
-      'Dev': 'https://dev.hydrogenplatform.com',
       'Sandbox': 'https://sandbox.hydrogenplatform.com',
       'Production': 'https://api.hydrogenplatform.com'
     }
