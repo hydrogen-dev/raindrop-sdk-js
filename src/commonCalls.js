@@ -5,8 +5,8 @@ const RaindropError = createError('RaindropError', {
   code: 'RaindropError'
 })
 
-function encodeBasicAuth (userName, key) {
-  let base64Encoded = Buffer.from(`${userName}:${key}`).toString('base64')
+function encodeBasicAuth (username, key) {
+  let base64Encoded = Buffer.from(`${username}:${key}`).toString('base64')
   return `Basic ${base64Encoded}`
 }
 
@@ -18,11 +18,11 @@ class BasicPartner {
     if (!config.hydroKey) {
       throw new RaindropError('Please provide your Hydro API key in the config: {hydroKey: ..., ...}')
     }
-    if (!config.hydroUserName) {
-      throw new RaindropError('Please provide your Hydro API username in the config: {hydroUserName: ..., ...}')
+    if (!config.hydroUsername) {
+      throw new RaindropError('Please provide your Hydro API username in the config: {hydroUsername: ..., ...}')
     }
     this.hydroKey = config.hydroKey
-    this.hydroUserName = config.hydroUserName
+    this.hydroUsername = config.hydroUsername
 
     this.verbose = false
     this.initialized = false
@@ -49,7 +49,7 @@ class BasicPartner {
     this.apiURL = this.environmentUrls[newEnvironment]
   }
 
-  initialize (options) {
+  async initialize (options) {
     let acceptableOptions = ['verbose', 'environment']
     // check that the passed option names are valid...
     if (!Object.keys(options).every(x => acceptableOptions.includes(x))) {
@@ -64,14 +64,14 @@ class BasicPartner {
 
     this.initialized = true
 
-    this.refreshToken()
+    await this.refreshToken()
   }
 
   ensureInitialized () {
     if (!this.initialized) {
       throw new RaindropError(
         `Object has not been initialized. Call the initialize method with ` +
-        `{environment: ${Object.keys(this.environmentUrls).map(x => `'${x}'`).join(' | ')}}`
+        `environment: ${Object.keys(this.environmentUrls).map(x => `'${x}'`).join(' | ')}`
       )
     }
   }
@@ -86,7 +86,7 @@ class BasicPartner {
         grant_type: 'client_credentials'
       },
       headers: {
-        Authorization: encodeBasicAuth(this.hydroUserName, this.hydroKey)
+        Authorization: encodeBasicAuth(this.hydroUsername, this.hydroKey)
       },
       json: true
     }
@@ -99,7 +99,7 @@ class BasicPartner {
         if (this.verbose) {
           throw error
         } else {
-          throw new RaindropError(`Token request failed. ${error.statusCode} error: ${error.message}.`)
+          throw new RaindropError(`Could not refresh token. ${error.statusCode} error: ${error.message}.`)
         }
       })
   }

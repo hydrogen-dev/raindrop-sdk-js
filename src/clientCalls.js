@@ -10,11 +10,11 @@ class RaindropPartner extends common.BasicPartner {
   }
 }
 
-RaindropPartner.prototype.registerUser = function (newUserName) {
+RaindropPartner.prototype.registerUser = function (newUsername) {
   var options = {
     method: 'POST',
     qs: {
-      username: newUserName,
+      username: newUsername,
       application_id: this.hydroApplicationId
     }
   }
@@ -22,12 +22,12 @@ RaindropPartner.prototype.registerUser = function (newUserName) {
   return this.callHydroAPI('/application/client', options)
 }
 
-RaindropPartner.prototype.verifySignature = function (challengeUserName, challengeString) {
+RaindropPartner.prototype.verifySignature = function (challengeUsername, challengeString) {
   var options = {
     method: 'GET',
     qs: {
       msg: challengeString,
-      username: challengeUserName,
+      username: challengeUsername,
       application_id: this.hydroApplicationId
     }
   }
@@ -35,13 +35,13 @@ RaindropPartner.prototype.verifySignature = function (challengeUserName, challen
   return this.callHydroAPI('/verify_signature', options)
 }
 
-RaindropPartner.prototype.unregisterUser = function (userName) {
+RaindropPartner.prototype.unregisterUser = function (username) {
   this.ensureInitialized()
 
   var options = {
     method: 'DELETE',
     qs: {
-      username: userName,
+      username: username,
       application_id: this.hydroApplicationId
     }
   }

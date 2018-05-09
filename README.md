@@ -74,7 +74,7 @@ const ClientRaindropPartner = new raindrop.client.RaindropPartner({
     hydroApplicationId: "YOUR_APPLICATION_ID"
 })
 
-ClientRaindropPartner.initialize({ environment: 'Sandbox' })
+await ClientRaindropPartner.initialize({ environment: 'Sandbox' })
 ```
 
 ### `registerUser(hydroUsername)`
@@ -100,7 +100,7 @@ const ServerRaindropPartner = new raindrop.server.RaindropPartner({
     hydroUserName: "YOUR_USER_NAME"
 })
 
-ServerRaindropPartner.initialize({ environment: 'Sandbox' })
+await ServerRaindropPartner.initialize({ environment: 'Sandbox' })
 ```
 
 ### `whitelist(addressToWhitelist)`
