@@ -5,27 +5,30 @@ const RaindropError = createError('RaindropError', {
   code: 'RaindropError'
 })
 
-function encodeBasicAuth (username, key) {
-  let base64Encoded = Buffer.from(`${username}:${key}`).toString('base64')
+function encodeBasicAuth (id, secret) {
+  let base64Encoded = Buffer.from(`${id}:${secret}`).toString('base64')
   return `Basic ${base64Encoded}`
 }
 
 const setVerbose = Symbol('setVerbose')
 const setEnvironment = Symbol('setEnvironment')
+const ensureInitialized = Symbol('ensureInitialized')
+const ensureEnvironmentSet = Symbol('ensureEnvironmentSet')
 
 class BasicPartner {
   constructor (config) {
-    if (!config.hydroKey) {
-      throw new RaindropError('Please provide your Hydro API key in the config: {hydroKey: ..., ...}')
+    if (!config.clientId) {
+      throw new RaindropError('Please provide your Hydro clientId in the config: {clientId: ..., ...}')
     }
-    if (!config.hydroUsername) {
-      throw new RaindropError('Please provide your Hydro API username in the config: {hydroUsername: ..., ...}')
+    if (!config.clientSecret) {
+      throw new RaindropError('Please provide your Hydro clientSecret in the config: {clientSecret: ..., ...}')
     }
-    this.hydroKey = config.hydroKey
-    this.hydroUsername = config.hydroUsername
+    this.clientId = config.clientId
+    this.clientSecret = config.clientSecret
 
     this.verbose = false
     this.initialized = false
+    this.environmentSet = false
     this.environmentUrls = {
       'Sandbox': 'https://sandbox.hydrogenplatform.com',
       'Production': 'https://api.hydrogenplatform.com'
@@ -62,12 +65,14 @@ class BasicPartner {
       this[setEnvironment](options.environment)
     }
 
-    this.initialized = true
+    this.environmentSet = true
 
     await this.refreshToken()
+
+    this.initialized = true
   }
 
-  ensureInitialized () {
+  [ensureInitialized] () {
     if (!this.initialized) {
       throw new RaindropError(
         `Object has not been initialized. Call the initialize method with ` +
@@ -76,8 +81,17 @@ class BasicPartner {
     }
   }
 
+  [ensureEnvironmentSet] () {
+    if (!this.environmentSet) {
+      throw new RaindropError(
+        `Environment has not been set. Call the initialize method with ` +
+        `environment: ${Object.keys(this.environmentUrls).map(x => `'${x}'`).join(' | ')}`
+      )
+    }
+  }
+
   refreshToken () {
-    this.ensureInitialized()
+    this[ensureEnvironmentSet]()
 
     var options = {
       method: 'POST',
@@ -86,7 +100,7 @@ class BasicPartner {
         grant_type: 'client_credentials'
       },
       headers: {
-        Authorization: encodeBasicAuth(this.hydroUsername, this.hydroKey)
+        Authorization: encodeBasicAuth(this.clientId, this.clientSecret)
       },
       json: true
     }
@@ -105,7 +119,7 @@ class BasicPartner {
   }
 
   callHydroAPI (endpoint, options) {
-    this.ensureInitialized()
+    this[ensureInitialized]()
 
     // inject url and authorization
     options.headers = {

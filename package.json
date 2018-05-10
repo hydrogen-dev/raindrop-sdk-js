@@ -4,7 +4,8 @@
   "description": "Convenience functions to integrate Raindrop authentication into your project.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bundle": "./node_modules/webpack-cli/bin/webpack.js -p"
   },
   "keywords": [
     "raindrop",

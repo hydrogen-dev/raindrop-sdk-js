@@ -31,7 +31,7 @@ A webpacked version is in [/dist/raindropBundle.js](./dist/raindropBundle.js) th
 
 
 ## Usage
-The `raindrop` package exposes two objects: `raindrop.client` and `raindrop.server`. To authenticate your API calls, you'll need to instantiate a `RaindropPartner` object for the module you'd like to use, and set the environment by calling `initialize` (see [the Raindrop docs](https://www.hydrogenplatform.com/docs/hydro/v1/#Environment) for information on what it means to set your environment):
+The `raindrop` package exposes two objects: `raindrop.client` and `raindrop.server`. To start making API calls, you'll need to first instantiate a `RaindropPartner` object for the module you'd like to use, and then initialize it by by calling `initialize`. Calling `initialize` will automatically fetch your [OAuth credentials](https://www.hydrogenplatform.com/docs/hydro/v1/#Authentication), and set [your environment](https://www.hydrogenplatform.com/docs/hydro/v1/#Environment).
 
 ```javascript
 const raindrop = require("@hydrogenplatform/raindrop")
@@ -41,14 +41,14 @@ const raindrop = require("@hydrogenplatform/raindrop")
 ### constructor `new RaindropPartner(config)`
 To instantiate a new RaindropPartner object in the `client` or `server` modules, you must pass a config object with the following values:
 - `config`
-  - `hydroKey` (required): Your key for the Hydro API
-  - `hydroUserName` (required): Your username for the Hydro API
-  - `hydroApplicationId` (required for `client` calls): Your application ID for the Hydro API
+  - `clientId` (required): Your OAuth id for the Hydro API
+  - `clientSecret` (required): Your OAuth secret for the Hydro API
+  - `applicationId` (required for `client` calls): Your application id for the Hydro API
 
 ### `RaindropPartnerObject.initialize(options)`
-You will also need to call `initialize` on each RaindropPartner object to set the environment:
+You will also need to call `initialize` on each RaindropPartner object:
 - `options`
-  - `environment` (required): Sets environment to `Sandbox` | `Production`
+  - `environment` (required): `Sandbox` | `Production` to set your environment
   - `verbose` (optional): `true` | `false` turns more detailed error reporting on | off
 
 ### `RaindropPartnerObject.refreshToken()`
@@ -58,7 +58,7 @@ Refreshes OAuth token. Called automatically by `initialize`.
 This function returns true when the transaction referenced by `transactionHash` has been included in a block on the Ethereum blockchain (Rinkeby if the environment is `Sandbox`, Mainnet if the environment is `Production`).
 - `transactionHash` (required): Hash of a transaction
 
-## `raindrop.client` Functions
+## Generic `raindrop.client` Functions
 
 ### `generateMessage()`
 Generates a random 6-digit string of integers for users to sign. Uses system-level CSPRNG.
@@ -69,9 +69,9 @@ Client-side Raindrop initialization code will look like:
 ```javascript
 // Client-side Raindrop Setup
 const ClientRaindropPartner = new raindrop.client.RaindropPartner({
-    hydroKey: "YOUR_KEY",
-    hydroUserName: "YOUR_USER_NAME",
-    hydroApplicationId: "YOUR_APPLICATION_ID"
+    clientId: "yourId",
+    clientSecret: "yourSecret",
+    applicationId: "yourApplicationId"
 })
 
 await ClientRaindropPartner.initialize({ environment: 'Sandbox' })

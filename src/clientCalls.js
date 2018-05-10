@@ -3,10 +3,10 @@ const common = require('./commonCalls')
 class RaindropPartner extends common.BasicPartner {
   constructor (config) {
     super(config)
-    if (!config.hydroApplicationId) {
-      throw new common.RaindropError(`Please provide your ApplicationId in the config: {hydroApplicationId: ..., ...}`)
+    if (!config.applicationId) {
+      throw new common.RaindropError(`Please provide your applicationId in the config: {applicationId: ..., ...}`)
     }
-    this.hydroApplicationId = config.hydroApplicationId
+    this.applicationId = config.applicationId
   }
 }
 
@@ -15,7 +15,7 @@ RaindropPartner.prototype.registerUser = function (newUsername) {
     method: 'POST',
     qs: {
       username: newUsername,
-      application_id: this.hydroApplicationId
+      application_id: this.applicationId
     }
   }
 
@@ -28,7 +28,7 @@ RaindropPartner.prototype.verifySignature = function (challengeUsername, challen
     qs: {
       msg: challengeString,
       username: challengeUsername,
-      application_id: this.hydroApplicationId
+      application_id: this.applicationId
     }
   }
 
@@ -42,7 +42,7 @@ RaindropPartner.prototype.unregisterUser = function (username) {
     method: 'DELETE',
     qs: {
       username: username,
-      application_id: this.hydroApplicationId
+      application_id: this.applicationId
     }
   }
 
