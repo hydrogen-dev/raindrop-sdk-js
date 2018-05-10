@@ -4,7 +4,7 @@ class RaindropPartner extends common.BasicPartner {}
 
 RaindropPartner.prototype.whitelist = function (addressToWhitelist) {
   var options = {
-    method: 'GET'
+    method: 'POST'
   }
 
   return this.callHydroAPI(`/whitelist/${addressToWhitelist}`, options)
@@ -12,7 +12,7 @@ RaindropPartner.prototype.whitelist = function (addressToWhitelist) {
 
 RaindropPartner.prototype.requestChallenge = function (hydroAddressId) {
   var options = {
-    method: 'GET',
+    method: 'POST',
     qs: {
       hydro_address_id: hydroAddressId
     }
