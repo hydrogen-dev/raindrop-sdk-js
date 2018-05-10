@@ -36,8 +36,6 @@ RaindropPartner.prototype.verifySignature = function (challengeUsername, challen
 }
 
 RaindropPartner.prototype.unregisterUser = function (username) {
-  this.ensureInitialized()
-
   var options = {
     method: 'DELETE',
     qs: {
