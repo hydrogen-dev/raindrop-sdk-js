@@ -96,8 +96,8 @@ Server-side Raindrop initialization code will look like:
 ```javascript
 // Server-side Raindrop Setup
 const ServerRaindropPartner = new raindrop.server.RaindropPartner({
-    hydroKey: "YOUR_KEY",
-    hydroUserName: "YOUR_USER_NAME"
+  clientId: "yourId",
+  clientSecret: "yourSecret"
 })
 
 await ServerRaindropPartner.initialize({ environment: 'Sandbox' })
