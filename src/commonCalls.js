@@ -90,7 +90,7 @@ class BasicPartner {
     }
   }
 
-  refreshToken () {
+  async refreshToken () {
     this[ensureEnvironmentSet]()
 
     var options = {
@@ -105,7 +105,7 @@ class BasicPartner {
       json: true
     }
 
-    return requestPromise(options)
+    await requestPromise(options)
       .then(result => {
         this.OAuthToken = result.access_token
       })
