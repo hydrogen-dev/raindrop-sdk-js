@@ -2,11 +2,15 @@ const common = require('./commonCalls')
 
 class RaindropPartner extends common.BasicPartner {
   constructor (config) {
-    super(config)
     if (!config.applicationId) {
-      throw new common.RaindropError(`Please provide your applicationId in the config: {applicationId: ..., ...}`)
+      throw new common.RaindropError('Please provide your applicationId in the config: {: ..., ...}')
     }
-    this.applicationId = config.applicationId
+    let clientConfig = Object.assign({}, config)
+    delete config.applicationId
+
+    super(config)
+
+    this.applicationId = clientConfig.applicationId
   }
 }
 

@@ -13,26 +13,48 @@ function encodeBasicAuth (id, secret) {
 const setVerbose = Symbol('setVerbose')
 const setEnvironment = Symbol('setEnvironment')
 const ensureInitialized = Symbol('ensureInitialized')
-const ensureEnvironmentSet = Symbol('ensureEnvironmentSet')
 
 class BasicPartner {
   constructor (config) {
-    if (!config.clientId) {
-      throw new RaindropError('Please provide your Hydro clientId in the config: {clientId: ..., ...}')
+    // check that the passed names are valid...
+    let requiredOptions = ['clientId', 'clientSecret', 'environment']
+    let optionalOptions = ['verbose']
+    let acceptableOptions = requiredOptions.concat(optionalOptions)
+
+    if (!Object.keys(config).every(x => acceptableOptions.includes(x))) {
+      throw new RaindropError(`Invalid option. Valid options are: ${acceptableOptions.toString()}`)
     }
-    if (!config.clientSecret) {
-      throw new RaindropError('Please provide your Hydro clientSecret in the config: {clientSecret: ..., ...}')
+
+    if (!requiredOptions.every(x => x in config)) {
+      throw new RaindropError(`Missing option. Please include all of: ${requiredOptions.toString()}`)
     }
+
     this.clientId = config.clientId
     this.clientSecret = config.clientSecret
 
-    this.verbose = false
-    this.initialized = false
-    this.environmentSet = false
-    this.environmentUrls = {
-      'Sandbox': 'https://sandbox.hydrogenplatform.com',
-      'Production': 'https://api.hydrogenplatform.com'
+    this[setEnvironment](config.environment)
+    if (config.verbose !== undefined) {
+      this[setVerbose](config.verbose)
     }
+
+    this.initialized = this.refreshToken()
+      .then(result => { this.initialized = result })
+  }
+
+  [setEnvironment] (environment) {
+    let allowedValues = {
+      Sandbox: 'https://sandbox.hydrogenplatform.com',
+      Production: 'https://api.hydrogenplatform.com'
+    }
+
+    if (!(environment in allowedValues)) {
+      throw new RaindropError(
+        `Invalid 'environment' value: Allowed options are: ${Object.keys(allowedValues).toString()}`
+      )
+    }
+
+    this.environment = environment
+    this.apiURL = allowedValues[environment]
   }
 
   [setVerbose] (flag) {
@@ -43,88 +65,40 @@ class BasicPartner {
     this.verbose = flag
   }
 
-  [setEnvironment] (newEnvironment) {
-    let allowedValues = Object.keys(this.environmentUrls)
-    if (!allowedValues.includes(newEnvironment)) {
-      throw new RaindropError(`Invalid 'environment' value: Allowed options are: ${allowedValues.toString()}`)
-    }
-    this.environment = newEnvironment
-    this.apiURL = this.environmentUrls[newEnvironment]
-  }
-
-  async initialize (options) {
-    let acceptableOptions = ['verbose', 'environment']
-    // check that the passed option names are valid...
-    if (!Object.keys(options).every(x => acceptableOptions.includes(x))) {
-      throw new RaindropError(`Invalid key. Allowed options are: ${acceptableOptions.toString()}`)
-    }
-    if ('verbose' in options) {
-      this[setVerbose](options.verbose)
-    }
-    if ('environment' in options) {
-      this[setEnvironment](options.environment)
-    }
-
-    this.environmentSet = true
-
-    await this.refreshToken()
-
-    this.initialized = true
-  }
-
   [ensureInitialized] () {
     if (!this.initialized) {
       throw new RaindropError(
-        `Object has not been initialized. Call the initialize method with ` +
-        `environment: ${Object.keys(this.environmentUrls).map(x => `'${x}'`).join(' | ')}`
-      )
+        'Error fetching OAuth token. Check that your credentials were entered correctly, and try calling ' +
+        'refreshToken() manually. If the problem persists, please file a Github issue.')
     }
   }
 
-  [ensureEnvironmentSet] () {
-    if (!this.environmentSet) {
-      throw new RaindropError(
-        `Environment has not been set. Call the initialize method with ` +
-        `environment: ${Object.keys(this.environmentUrls).map(x => `'${x}'`).join(' | ')}`
-      )
-    }
-  }
-
-  async refreshToken () {
-    this[ensureEnvironmentSet]()
-
+  refreshToken () {
     var options = {
       method: 'POST',
+      timeout: 10000, // 10 seconds
       url: `${this.apiURL}/authorization/v1/oauth/token`,
-      qs: {
-        grant_type: 'client_credentials'
-      },
-      headers: {
-        Authorization: encodeBasicAuth(this.clientId, this.clientSecret)
-      },
+      qs: { grant_type: 'client_credentials' },
+      headers: { Authorization: encodeBasicAuth(this.clientId, this.clientSecret) },
       json: true
     }
 
-    await requestPromise(options)
+    return requestPromise(options)
       .then(result => {
         this.OAuthToken = result.access_token
+        return true
       })
-      .catch(error => {
-        if (this.verbose) {
-          throw error
-        } else {
-          throw new RaindropError(`Could not refresh token. ${error.statusCode} error: ${error.message}.`)
-        }
+      .catch(() => {
+        return false
       })
   }
 
-  callHydroAPI (endpoint, options) {
+  async callHydroAPI (endpoint, options) {
+    await this.initialized
     this[ensureInitialized]()
 
     // inject url and authorization
-    options.headers = {
-      Authorization: `Bearer ${this.OAuthToken}`
-    }
+    options.headers = { Authorization: `Bearer ${this.OAuthToken}` }
     options.url = `${this.apiURL}/hydro/v1${endpoint}`
     options.json = true
 
@@ -145,9 +119,7 @@ class BasicPartner {
   transactionStatus (transactionHash) {
     var options = {
       method: 'GET',
-      qs: {
-        transaction_hash: transactionHash
-      }
+      qs: { transaction_hash: transactionHash }
     }
 
     return this.callHydroAPI('/transaction', options)
