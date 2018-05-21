@@ -17,7 +17,7 @@ class RaindropPartner extends common.BasicPartner {
 RaindropPartner.prototype.registerUser = function (newUsername) {
   var options = {
     method: 'POST',
-    qs: {
+    body: {
       username: newUsername,
       application_id: this.applicationId
     }
