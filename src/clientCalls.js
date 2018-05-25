@@ -3,7 +3,7 @@ const common = require('./commonCalls')
 class RaindropPartner extends common.BasicPartner {
   constructor (config) {
     if (!config.applicationId) {
-      throw new common.RaindropError('Please provide your applicationId in the config: {: ..., ...}')
+      throw new common.RaindropError('Please provide your applicationId in the config: {applicationId: ..., ...}')
     }
     let clientConfig = Object.assign({}, config)
     delete config.applicationId
@@ -14,11 +14,11 @@ class RaindropPartner extends common.BasicPartner {
   }
 }
 
-RaindropPartner.prototype.registerUser = function (newUsername) {
+RaindropPartner.prototype.registerUser = function (hydroID) {
   var options = {
     method: 'POST',
     body: {
-      username: newUsername,
+      hydro_id: hydroID,
       application_id: this.applicationId
     }
   }
@@ -26,12 +26,12 @@ RaindropPartner.prototype.registerUser = function (newUsername) {
   return this.callHydroAPI('/application/client', options)
 }
 
-RaindropPartner.prototype.verifySignature = function (challengeUsername, challengeString) {
+RaindropPartner.prototype.verifySignature = function (hydroID, challengeString) {
   var options = {
     method: 'GET',
     qs: {
-      msg: challengeString,
-      username: challengeUsername,
+      message: challengeString,
+      hydro_id: hydroID,
       application_id: this.applicationId
     }
   }
@@ -39,11 +39,11 @@ RaindropPartner.prototype.verifySignature = function (challengeUsername, challen
   return this.callHydroAPI('/verify_signature', options)
 }
 
-RaindropPartner.prototype.unregisterUser = function (username) {
+RaindropPartner.prototype.unregisterUser = function (hydroID) {
   var options = {
     method: 'DELETE',
     qs: {
-      username: username,
+      hydro_id: hydroID,
       application_id: this.applicationId
     }
   }

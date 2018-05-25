@@ -72,18 +72,18 @@ const ClientRaindropPartner = new raindrop.client.RaindropPartner({
 })
 ```
 
-### `registerUser(hydroUsername)`
+### `registerUser(HydroID)`
 Should be called when a user elects to use Raindrop Client for the first time with your application.
-- `hydroUsername`: the new user's Hydro username (the one they used when signing up for Hydro mobile app)
+- `HydroID`: the new user's HydroID (the one they used when signing up for Hydro mobile app)
 
-### `verifySignature(hydroUsername, message)`
+### `verifySignature(HydroID, message)`
 Should be called each time you need to verify whether a user has signed a message.
-- `hydroUsername`: the username of the user that is meant to have signed `message`
+- `HydroID`: the HydroID of the user that is meant to have signed `message`
 - `message`: a message generated from `generateMessage()` (or any 6-digit numeric code)
 
-### `unregisterUser(hydroUsername)`
+### `unregisterUser(HydroID)`
 Should be called when a user disables Client-side Raindrop with your application.
-- `hydroUsername`: the user's Hydro username (the one they used when signing up for Hydro mobile app)
+- `HydroID`: the user's HydroID (the one they used when signing up for Hydro mobile app)
 
 ## `raindrop.server.RaindropPartner` Functions
 Server-side Raindrop initialization code will look like:
