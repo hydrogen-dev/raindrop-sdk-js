@@ -2,7 +2,7 @@
 This package provides a suite of convenience functions intended to simplify the integration of Hydro's [Raindrop authentication](https://www.hydrogenplatform.com/hydro) into your project. An equivalent [Python SDK](https://github.com/hydrogen-dev/raindrop-sdk-python) is also available. More information, including detailed API documentation, is available in the [Raindrop documentation](https://www.hydrogenplatform.com/docs/hydro/v1/#Raindrop). Raindrop comes in two flavors:
 
 ## Client-side Raindrop
-Client-side Raindrop is a next-gen 2FA solution. We've open-sourced the [code powering Client-side Raindrop](https://github.com/hydrogen-dev/smart-contracts/tree/master/raindrop-client).
+Client-side Raindrop is a next-gen 2FA solution. We've open-sourced the [code powering Client-side Raindrop](https://github.com/hydrogen-dev/smart-contracts/tree/master/client-raindrop).
 
 
 ## Server-side Raindrop
