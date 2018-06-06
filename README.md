@@ -22,13 +22,6 @@ You can also install manually:
 - `cd raindrop-sdk-js`
 - `npm install`
 
-### In a Browser
-A webpacked version is in [/dist/raindropBundle.js](./dist/raindropBundle.js) that you can include in an HTML page. Since your Hydro API credentials **must not** be stored in the frontend, this version exposes a global `raindrop` object with only a single method that does not call the Hydro API: `generateMessage` (see below for details).
-
-```html
-<script src="raindropBundle.js"></script>
-```
-
 
 ## Usage
 The `raindrop` package exposes two objects: `raindrop.client` and `raindrop.server`. To start making API calls, you'll need to instantiate a `RaindropPartner` object for the module you'd like to use. The SDK will automatically fetch you an [OAuth token](https://www.hydrogenplatform.com/docs/hydro/v1/#Authentication), and set [your environment](https://www.hydrogenplatform.com/docs/hydro/v1/#Environment).

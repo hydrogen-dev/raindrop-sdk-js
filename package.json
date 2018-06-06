@@ -4,8 +4,7 @@
   "description": "Convenience functions to integrate Raindrop authentication into your project.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "bundle": "./node_modules/webpack-cli/bin/webpack.js -p"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "raindrop",
@@ -29,9 +28,7 @@
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.7.0",
-    "eslint-plugin-standard": "^3.1.0",
-    "webpack": "^4.6.0",
-    "webpack-cli": "^2.0.15"
+    "eslint-plugin-standard": "^3.1.0"
   },
   "dependencies": {
     "create-error": "^0.3.1",
