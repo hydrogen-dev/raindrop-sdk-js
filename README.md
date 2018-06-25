@@ -74,6 +74,8 @@ Should be called each time you need to verify whether a user has signed a messag
 - `HydroID`: the HydroID of the user that is meant to have signed `message`
 - `message`: a message generated from `generateMessage()` (or any 6-digit numeric code)
 
+Returns a response object that looks like: `{verified: true, data: {...}}`. The `verified` parameter will only be `true` for successful verification attempts.
+
 ### `unregisterUser(HydroID)`
 Should be called when a user disables Client-side Raindrop with your application.
 - `HydroID`: the user's HydroID (the one they used when signing up for Hydro mobile app)
@@ -101,6 +103,8 @@ Initiate an authentication attempt on behalf of the user associated with `hydroA
 ### `authenticate(hydroAddressId)`
 Checks whether the user correctly performed the raindrop.
 - `hydroAddressId`: the `hydro_address_id` of the user who claims to be authenticated
+
+Returns a response object that looks like: `{authenticated: true, data: {...}}`. The `authenticated` parameter will only be `true` for successful authentication attempts.
 
 ## Copyright & License
 Copyright 2018 The Hydrogen Technology Corporation under the MIT License.

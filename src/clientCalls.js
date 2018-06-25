@@ -36,7 +36,23 @@ RaindropPartner.prototype.verifySignature = function (hydroID, challengeString) 
     }
   }
 
+  var receivedVerboseValue = this.verbose
+  this.verbose = true
+
   return this.callHydroAPI('/verify_signature', options)
+    .then(result => {
+      return { verified: true, data: result }
+    })
+    .catch(error => {
+      if (error.statusCode === 401) {
+        return { verified: false }
+      } else {
+        throw new common.RaindropError(`The call failed. ${error.statusCode} error: ${error.message}.`)
+      }
+    })
+    .finally(() => {
+      this.verbose = receivedVerboseValue
+    })
 }
 
 RaindropPartner.prototype.unregisterUser = function (hydroID) {
