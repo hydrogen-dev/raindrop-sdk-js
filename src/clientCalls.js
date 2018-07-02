@@ -41,17 +41,16 @@ RaindropPartner.prototype.verifySignature = function (hydroID, challengeString) 
 
   return this.callHydroAPI('/verify_signature', options)
     .then(result => {
+      this.verbose = receivedVerboseValue
       return { verified: true, data: result }
     })
     .catch(error => {
+      this.verbose = receivedVerboseValue
       if (error.statusCode === 401) {
         return { verified: false }
       } else {
         throw new common.RaindropError(`The call failed. ${error.statusCode} error: ${error.message}.`)
       }
-    })
-    .finally(() => {
-      this.verbose = receivedVerboseValue
     })
 }
 

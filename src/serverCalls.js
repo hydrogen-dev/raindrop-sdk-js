@@ -35,17 +35,16 @@ RaindropPartner.prototype.authenticate = function (hydroAddressId) {
 
   return this.callHydroAPI('/authenticate', options)
     .then(result => {
+      this.verbose = receivedVerboseValue
       return { authenticated: true, data: result }
     })
     .catch(error => {
+      this.verbose = receivedVerboseValue
       if (error.statusCode === 401) {
         return { authenticated: false }
       } else {
         throw new common.RaindropError(`The call failed. ${error.statusCode} error: ${error.message}.`)
       }
-    })
-    .finally(() => {
-      this.verbose = receivedVerboseValue
     })
 }
 
